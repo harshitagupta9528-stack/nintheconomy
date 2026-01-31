@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Notes Class 9 | A Better You</title>
+
+<!-- jsPDF CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+:root{
+  --bg:#0b1020;
+  --card:#111a2e;
+  --text:#e8ecff;
+  --accent:#3b82f6;
+  --accent2:#ffb703;
+  --shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background: radial-gradient(circle at top left, #1b1b3a, #0b1020 55%, #05070f);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* Background Generative AI Image */
+.bg{
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:
+    url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80") center/cover no-repeat;
+  filter: blur(5px) brightness(0.7);
+  z-index:-1;
+}
+
+.topbar{
+  position:sticky;
+  top:0;
+  background:rgba(10, 12, 20, 0.75);
+  backdrop-filter: blur(10px);
+  padding:15px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  z-index:10;
+}
+
+.topbar h1{
+  margin:0;
+  font-size:18px;
+  letter-spacing:1px;
+}
+
+.topbar .nav a{
+  color:var(--text);
+  margin:0 8px;
+  text-decoration:none;
+  font-weight:bold;
+}
+
+.topbar .nav a:hover{
+  color:var(--accent);
+}
+
+.container{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+
+.hero{
+  padding:60px 20px;
+  text-align:center;
+}
+
+.hero h2{
+  font-size:36px;
+  margin:0;
+}
+
+.hero p{
+  margin:10px 0 20px;
+  color:rgba(232,236,255,0.8);
+}
+
+.btn{
+  background:var(--accent);
+  color:#0b1020;
+  padding:10px 16px;
+  border-radius:10px;
+  text-decoration:none;
+  font-weight:bold;
+  margin:5px;
+  display:inline-block;
+  transition: transform 0.2s ease;
+}
+
+.btn:hover{
+  background:var(--accent2);
+  color:#0b1020;
+  transform: translateY(-2px);
+}
+
+.search{
+  margin:20px 0;
+  display:flex;
+  justify-content:center;
+}
+
+.search input{
+  width:70%;
+  padding:12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,0.2);
+  background:rgba(255,255,255,0.05);
+  color:var(--text);
+  outline:none;
+}
+
+.cards{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:20px;
+  margin-top:20px;
+}
+
+.card{
+  background:rgba(17,26,46,0.8);
+  padding:20px;
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  transform: translateY(0px);
+  transition: transform 0.3s ease;
+}
+
+.card:hover{
+  transform: translateY(-8px);
+}
+
+.card h3{
+  margin-top:0;
+  color:var(--accent);
+}
+
+.card p{
+  color:rgba(232,236,255,0.8);
+}
+
+.note{
+  background:rgba(17,26,46,0.8);
+  padding:20px;
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  margin-top:20px;
+  animation: fadeIn 0.7s ease;
+}
+
+@keyframes fadeIn{
+  from {opacity:0; transform: translateY(20px);}
+  to {opacity:1; transform: translateY(0);}
+}
+
+.note h2{
+  color:var(--accent);
+}
+
+.note ul{
+  margin-left:20px;
+}
+
+.qa{
+  margin-top:10px;
+  background:rgba(255,255,255,0.05);
+  padding:12px;
+  border-radius:12px;
+}
+
+.quiz{
+  background:rgba(255,255,255,0.05);
+  padding:12px;
+  border-radius:12px;
+  margin-top:10px;
+}
+
+.quiz button{
+  margin:5px;
+  padding:8px 12px;
+  border-radius:10px;
+  border:none;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px;
+}
+
+.footer{
+  text-align:center;
+  margin:40px 0 20px;
+  color:rgba(232,236,255,0.7);
+}
+
+@media(max-width: 900px){
+  .cards{
+    grid-template-columns:1fr;
+  }
+  .search input{
+    width:90%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg"></div>
+
+<header class="topbar">
+  <h1>AI Notes - Class 9</h1>
+  <nav class="nav" id="nav-menu"></nav>
+</header>
+
+<div class="container" id="home">
+  <section class="hero">
+    <h2>AI Notes (Class 9) - NCERT</h2>
+    <p>Deep notes, important terms, Q/A, quiz & PDF download in one page.</p>
+    <a class="btn" href="#chapters">Open Chapters</a>
+    <a class="btn" href="#better">A Better You</a>
+  </section>
+
+  <div class="search">
+    <input type="text" id="search" placeholder="Search notes..." oninput="searchNotes()">
+  </div>
+
+  <section id="chapters">
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <section id="better">
+    <div class="note">
+      <h2>A Better You</h2>
+      <p>Develop a habit of learning, practice daily, and stay consistent. AI is a tool, not a replacement.</p>
+      <ul>
+        <li>Practice coding daily (even 10 minutes)</li>
+        <li>Read about AI applications</li>
+        <li>Stay ethical and responsible</li>
+        <li>Focus on problem solving</li>
+      </ul>
+    </div>
+  </section>
+</div>
+
+<footer class="footer">
+  © 2026 AI Notes | Class 9
+</footer>
+
+<script>
+const { jsPDF } = window.jspdf;
+
+// FULL DATA FOR ALL CHAPTERS
+const chapters = [
+  {
+    title: "Communication Skills",
+    notes: "Communication skills are the ability to express your thoughts clearly. It includes listening, speaking, writing and presenting. Effective communication is essential for teamwork and learning.",
+    terms: [
+      "Communication", "Verbal", "Non-verbal", "Active listening",
+      "Feedback", "Body language", "Clarity", "Tone",
+      "Empathy", "Listening", "Presentation", "Questioning",
+      "Respect", "Confidence", "Eye contact", "Listening skills",
+      "Speaking skills", "Writing skills", "Public speaking", "Dialogue"
+    ],
+    qa: [
+      {q:"What is communication?", a:"Exchange of information between people."},
+      {q:"Name two types of communication.", a:"Verbal and Non-verbal."},
+      {q:"What is active listening?", a:"Listening carefully and responding appropriately."},
+      {q:"Why is feedback important?", a:"Helps improve and correct mistakes."},
+      {q:"What is body language?", a:"Non-verbal signals using body movements."},
+      {q:"How can you improve communication?", a:"Practice speaking, listen more, be clear."},
+      {q:"What is empathy?", a:"Understanding someone else’s feelings."},
+      {q:"Why is clarity important?", a:"To avoid misunderstanding."},
+      {q:"What is tone of voice?", a:"The way you say something."},
+      {q:"What is presentation skill?", a:"Ability to present information clearly to others."},
+      {q:"What is public speaking?", a:"Speaking confidently in front of a group."},
+      {q:"What is dialogue?", a:"A conversation between two or more people."}
+    ],
+    quiz: [
+      {q:"Communication includes:", options:["Listening","Speaking","Both","None"], ans:2},
+      {q:"Non-verbal communication is:", options:["Speaking","Body language","Writing","Reading"], ans:1},
+      {q:"Active listening means:", options:["Ignoring speaker","Listening carefully","Talking only","None"], ans:1}
+    ]
+  },
+  {
+    title: "Self Management Skills",
+    notes: "Self-management skills help you control your emotions, time, and behaviour. It includes planning, time management, discipline and self-motivation.",
+    terms: [
+      "Self-management", "Time management", "Discipline", "Motivation",
+      "Goal setting", "Planning", "Prioritizing", "Self-control",
+      "Focus", "Habit", "Responsibility", "Stress management",
+      "Consistency", "Self-awareness", "Self-discipline", "Procrastination",
+      "Goal", "Routine", "Self-motivation", "Task management"
+    ],
+    qa: [
+      {q:"What is self-management?", a:"Ability to manage yourself effectively."},
+      {q:"Why is time management important?", a:"Helps complete tasks on time."},
+      {q:"What is goal setting?", a:"Setting targets to achieve."},
+      {q:"What is self-discipline?", a:"Controlling your actions and habits."},
+      {q:"How can you improve self-management?", a:"Plan daily, set goals, avoid distractions."},
+      {q:"What is prioritizing?", a:"Doing important tasks first."},
+      {q:"What is consistency?", a:"Doing something regularly without fail."},
+      {q:"Why is stress management needed?", a:"To stay calm and focused."},
+      {q:"What is self-awareness?", a:"Understanding your strengths and weaknesses."},
+      {q:"What is responsibility?", a:"Being accountable for your actions."}
+    ],
+    quiz: [
+      {q:"Self-management includes:", options:["Time management","Planning","Both","None"], ans:2},
+      {q:"Goal setting helps in:", options:["Planning","Motivation","Both","None"], ans:2}
+    ]
+  },
+  {
+    title: "ICT Skills",
+    notes: "ICT stands for Information and Communication Technology. It includes using computers, internet, email, and digital tools for learning and communication.",
+    terms: [
+      "ICT", "Internet", "Email", "Browser", "Search engine",
+      "Digital tools", "Software", "Hardware", "Cloud", "Data",
+      "Cyber safety", "Password", "Network", "Online learning",
+      "Multimedia", "Digital literacy", "URL", "Website", "App", "Download"
+    ],
+    qa: [
+      {q:"What is ICT?", a:"Information and Communication Technology."},
+      {q:"Name two ICT tools.", a:"Email and browser."},
+      {q:"What is a browser?", a:"Software to access the internet."},
+      {q:"What is cyber safety?", a:"Protecting yourself online."},
+      {q:"What is a search engine?", a:"A tool to search information online."},
+      {q:"What is cloud storage?", a:"Saving data on internet servers."},
+      {q:"What is digital literacy?", a:"Ability to use digital tools effectively."},
+      {q:"What is multimedia?", a:"Combination of text, images, audio and video."},
+      {q:"What is hardware?", a:"Physical parts of a computer."},
+      {q:"What is software?", a:"Programs that run on computers."}
+    ],
+    quiz: [
+      {q:"ICT stands for:", options:["Internet and Computer Tech","Information and Communication Tech","Internal Communication Tech","None"], ans:1},
+      {q:"A browser is used for:", options:["Writing","Accessing internet","Printing","None"], ans:1}
+    ]
+  },
+  {
+    title: "Entrepreneurial Skills",
+    notes: "Entrepreneurial skills help you start a business. It includes creativity, planning, risk-taking, and leadership. Entrepreneurs create new ideas and turn them into real products or services.",
+    terms: [
+      "Entrepreneur", "Business", "Startup", "Innovation",
+      "Creativity", "Risk-taking", "Leadership", "Planning",
+      "Marketing", "Investment", "Profit", "Customer",
+      "Teamwork", "Problem-solving", "Strategy", "Networking",
+      "Pitch", "Product", "Revenue", "Business plan"
+    ],
+    qa: [
+      {q:"Who is an entrepreneur?", a:"A person who starts a business."},
+      {q:"What is innovation?", a:"Creating new ideas or products."},
+      {q:"What is risk-taking?", a:"Trying something new despite uncertainty."},
+      {q:"What is profit?", a:"Money earned after expenses."},
+      {q:"What is marketing?", a:"Promoting products to customers."},
+      {q:"What is investment?", a:"Putting money to start a business."},
+      {q:"Why is planning important?", a:"To achieve business goals."},
+      {q:"What is teamwork?", a:"Working together with others."},
+      {q:"What is strategy?", a:"A plan to achieve success."},
+      {q:"What is customer?", a:"Person who buys products."}
+    ],
+    quiz: [
+      {q:"Entrepreneur is a person who:", options:["Buys products","Starts a business","Teaches students","None"], ans:1},
+      {q:"Profit is:", options:["Money earned","Money spent","Money saved","None"], ans:0}
+    ]
+  },
+  {
+    title: "Green Skills",
+    notes: "Green skills are skills needed for sustainable living. It includes saving energy, reducing waste, using eco-friendly methods, and protecting nature.",
+    terms: [
+      "Green skills", "Sustainability", "Eco-friendly", "Recycling",
+      "Energy saving", "Climate change", "Conservation", "Pollution",
+      "Waste management", "Renewable energy", "Biodiversity",
+      "Carbon footprint", "Sustainable development", "Environment",
+      "Green technology", "Reuse", "Reduce", "Solar power", "Wind energy", "Composting"
+    ],
+    qa: [
+      {q:"What are green skills?", a:"Skills for sustainable living."},
+      {q:"What is recycling?", a:"Converting waste into reusable material."},
+      {q:"What is sustainability?", a:"Using resources without harming future generations."},
+      {q:"What is pollution?", a:"Harmful substances in environment."},
+      {q:"What is renewable energy?", a:"Energy from natural sources like sun and wind."},
+      {q:"What is carbon footprint?", a:"Total carbon emissions by a person."},
+      {q:"What is biodiversity?", a:"Variety of plants and animals."},
+      {q:"What is conservation?", a:"Protecting natural resources."},
+      {q:"What is waste management?", a:"Proper handling of waste."},
+      {q:"Why is green living important?", a:"To protect environment for future."}
+    ],
+    quiz: [
+      {q:"Recycling means:", options:["Throwing waste","Reusing waste","Selling waste","None"], ans:1},
+      {q:"Renewable energy includes:", options:["Coal","Solar","Petrol","None"], ans:1}
+    ]
+  },
+  {
+    title: "Ethics",
+    notes: "Ethics is about doing the right thing. In AI, ethics means using AI responsibly, respecting privacy, avoiding bias, and being honest in data use.",
+    terms: [
+      "Ethics", "Privacy", "Bias", "Fairness",
+      "Transparency", "Accountability", "Security",
+      "Responsibility", "Consent", "Data protection",
+      "Honesty", "Integrity", "Digital ethics",
+      "AI ethics", "Human rights", "Fair use", "Consent", "Cybersecurity",
+      "Data misuse", "Bias-free AI"
+    ],
+    qa: [
+      {q:"What is ethics?", a:"Moral principles of right and wrong."},
+      {q:"What is privacy?", a:"Keeping personal data safe."},
+      {q:"What is bias?", a:"Unfair preference in data."},
+      {q:"Why is fairness important?", a:"To avoid discrimination."},
+      {q:"What is transparency?", a:"Clear and open AI processes."},
+      {q:"What is accountability?", a:"Taking responsibility for actions."},
+      {q:"What is consent?", a:"Permission before using data."},
+      {q:"What is data protection?", a:"Securing personal data."},
+      {q:"What is integrity?", a:"Being honest and ethical."},
+      {q:"What is AI ethics?", a:"Ethical rules for AI use."}
+    ],
+    quiz: [
+      {q:"Bias in AI means:", options:["Fair decision","Unfair preference","Fast results","None"], ans:1},
+      {q:"Privacy means:", options:["Sharing data","Protecting data","Deleting data","None"], ans:1}
+    ]
+  },
+  {
+    title: "Data Literacy",
+    notes: "Data literacy is the ability to read, understand, and analyze data. It includes collecting, cleaning, and interpreting data to make decisions.",
+    terms: [
+      "Data", "Data literacy", "Information", "Analysis",
+      "Data collection", "Data cleaning", "Data visualization",
+      "Charts", "Graphs", "Statistics",
+      "Dataset", "Interpretation", "Pattern",
+      "Insight", "Decision making", "Data mining",
+      "Big data", "Data reporting", "Data accuracy", "Data quality"
+    ],
+    qa: [
+      {q:"What is data?", a:"Facts and information in numbers or text."},
+      {q:"What is data literacy?", a:"Ability to understand and use data."},
+      {q:"What is data cleaning?", a:"Removing errors from data."},
+      {q:"What is data visualization?", a:"Showing data using charts."},
+      {q:"What is a dataset?", a:"Collection of data."},
+      {q:"What is analysis?", a:"Studying data to find meaning."},
+      {q:"What is interpretation?", a:"Understanding what data means."},
+      {q:"What is a pattern?", a:"Repeated trend in data."},
+      {q:"What is insight?", a:"Important conclusion from data."},
+      {q:"Why is data literacy important?", a:"To make smart decisions."}
+    ],
+    quiz: [
+      {q:"Data is:", options:["Only numbers","Information","Only pictures","None"], ans:1},
+      {q:"Data cleaning means:", options:["Adding errors","Removing errors","Saving data","None"], ans:1}
+    ]
+  },
+  {
+    title: "Math for AI",
+    notes: "Math for AI includes basic algebra, probability, statistics, and graphs. AI uses math to analyze data and make predictions.",
+    terms: [
+      "Algebra", "Probability", "Statistics", "Mean",
+      "Median", "Mode", "Graph", "Function",
+      "Equation", "Variable", "Data",
+      "Correlation", "Trend", "Model", "Prediction",
+      "Probability distribution", "Linear equation", "Matrix", "Vectors", "Statistics"
+    ],
+    qa: [
+      {q:"What is algebra?", a:"Math using variables and equations."},
+      {q:"What is probability?", a:"Chance of an event happening."},
+      {q:"What is mean?", a:"Average of numbers."},
+      {q:"What is median?", a:"Middle value in data."},
+      {q:"What is mode?", a:"Most frequent value."},
+      {q:"What is statistics?", a:"Study of data."},
+      {q:"What is correlation?", a:"Relation between two variables."},
+      {q:"What is a graph?", a:"Visual representation of data."},
+      {q:"What is prediction?", a:"Estimating future result."},
+      {q:"Why math is important in AI?", a:"To analyze data and create models."}
+    ],
+    quiz: [
+      {q:"Mean is:", options:["Middle value","Average","Most frequent","None"], ans:1},
+      {q:"Probability is:", options:["Chance","Rule","Method","None"], ans:0}
+    ]
+  },
+  {
+    title: "Introduction to Generative AI",
+    notes: "Generative AI creates new content like text, images, and music using data. It uses models like GPT and DALL-E.",
+    terms: [
+      "Generative AI", "Model", "GPT", "DALL-E",
+      "Training data", "Output", "Prompt", "AI image",
+      "Text generation", "Deep learning", "Neural network",
+      "Language model", "AI creativity", "Automation", "Content",
+      "Transformer", "Inference", "Training", "Fine-tuning", "Prompt engineering"
+    ],
+    qa: [
+      {q:"What is generative AI?", a:"AI that creates new content."},
+      {q:"Name two generative AI models.", a:"GPT and DALL-E."},
+      {q:"What is a prompt?", a:"Input given to AI to generate output."},
+      {q:"What is training data?", a:"Data used to teach AI."},
+      {q:"What is output?", a:"Result produced by AI."},
+      {q:"What is a language model?", a:"AI model that understands text."},
+      {q:"What is deep learning?", a:"Advanced machine learning using neural networks."},
+      {q:"What is AI creativity?", a:"AI’s ability to generate new ideas."},
+      {q:"What is automation?", a:"AI doing tasks automatically."},
+      {q:"Why generative AI is useful?", a:"To create content fast and easily."}
+    ],
+    quiz: [
+      {q:"Generative AI creates:", options:["New content","Old content","Only images","None"], ans:0},
+      {q:"GPT is used for:", options:["Text","Cooking","Sports","None"], ans:0}
+    ]
+  },
+  {
+    title: "Introduction to Python",
+    notes: "Python is a simple programming language used in AI. It is easy to learn and supports libraries like NumPy, Pandas and TensorFlow.",
+    terms: [
+      "Python", "Programming", "Code", "Variable",
+      "Function", "Loop", "List", "String",
+      "Library", "NumPy", "Pandas", "TensorFlow",
+      "AI", "Syntax", "Indentation", "If statement",
+      "For loop", "While loop", "Data type", "Debugging"
+    ],
+    qa: [
+      {q:"What is Python?", a:"A programming language."},
+      {q:"What is a variable?", a:"A container to store data."},
+      {q:"What is a function?", a:"A reusable block of code."},
+      {q:"What is a loop?", a:"Repeats code multiple times."},
+      {q:"What is a list?", a:"A collection of items."},
+      {q:"What is a string?", a:"Text data."},
+      {q:"What is a library?", a:"Pre-written code for tasks."},
+      {q:"Name one AI library.", a:"TensorFlow."},
+      {q:"Why Python is popular in AI?", a:"Simple syntax and many libraries."},
+      {q:"What is indentation?", a:"Space used to structure code."}
+    ],
+    quiz: [
+      {q:"Python is a:", options:["Language","Food","Sport","None"], ans:0},
+      {q:"A variable stores:", options:["Data","Food","Money","None"], ans:0}
+    ],
+    code: `# Python Example: Hello World
+print("Hello, AI World!")
+
+# Simple addition
+a = 5
+b = 10
+print("Sum:", a + b)
+
+# Loop example
+for i in range(3):
+    print("AI", i)`
+  }
+];
+
+function buildNav(){
+  const nav = document.getElementById("nav-menu");
+  nav.innerHTML = chapters.map((ch, idx)=>
+    `<a href="javascript:void(0)" onclick="openChapter(${idx})">${ch.title}</a>`
+  ).join("");
+}
+
+function createCards(list){
+  const container = document.getElementById("cards");
+  container.innerHTML = "";
+  list.forEach((ch,index)=>{
+    const card = document.createElement("div");
+    card.className="card";
+    card.innerHTML = `
+      <h3>${ch.title}</h3>
+      <p>${ch.notes.substring(0,120)}...</p>
+      <div class="actions">
+        <a class="btn" href="javascript:void(0)" onclick="openChapter(${index})">Open</a>
+        <a class="btn" href="javascript:void(0)" onclick="downloadPDF(${index})">PDF</a>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function openChapter(index){
+  const ch = chapters[index];
+  document.querySelector("#chapters").scrollIntoView({behavior:"smooth"});
+  document.querySelector(".cards").innerHTML = `
+    <div class="note">
+      <h2>${ch.title}</h2>
+      <p>${ch.notes}</p>
+      <h3>Important Terms</h3>
+      <ul>${ch.terms.map(t=>`<li>${t}</li>`).join("")}</ul>
+      <h3>Q/A</h3>
+      ${ch.qa.map(q=>`<div class="qa"><b>${q.q}</b><br>${q.a}</div>`).join("")}
+
+      ${ch.code ? `<h3>Python Code Example</h3>
+      <pre style="background:#111a2e; padding:12px; border-radius:10px;">${ch.code}</pre>` : ""}
+
+      <h3>Quiz</h3>
+      <div id="quiz-area" class="quiz"></div>
+
+      <div class="actions">
+        <a class="btn" href="javascript:void(0)" onclick="downloadPDF(${index})">Download This Chapter PDF</a>
+        <a class="btn" href="javascript:void(0)" onclick="downloadAllPDF()">Download ALL Chapters PDF</a>
+      </div>
+    </div>
+  `;
+  renderQuiz(index);
+}
+
+function renderQuiz(index){
+  const quizArea = document.getElementById("quiz-area");
+  const quiz = chapters[index].quiz;
+  let current = 0;
+  let score = 0;
+
+  function showQuestion(){
+    if(current>=quiz.length){
+      quizArea.innerHTML = `<div class="qa"><b>Quiz Completed!</b><br>Your Score: ${score}/${quiz.length}</div>`;
+      return;
+    }
+    const q = quiz[current];
+    quizArea.innerHTML = `
+      <div class="qa">
+        <b>${q.q}</b><br>
+        ${q.options.map((opt,i)=>`<button onclick="checkAnswer(${index},${current},${i})">${opt}</button>`).join("")}
+      </div>
+    `;
+  }
+
+  window.checkAnswer = function(idx,qIdx,optIdx){
+    const correct = chapters[idx].quiz[qIdx].ans;
+    if(optIdx===correct) score++;
+    current++;
+    showQuestion();
+  }
+  showQuestion();
+}
+
+function searchNotes(){
+  const query = document.getElementById("search").value.toLowerCase();
+  const filtered = chapters.filter(ch=>{
+    return (ch.title+" "+ch.notes+" "+ch.terms.join(" ")+" "+ch.qa.map(q=>q.q+q.a).join(" "))
+      .toLowerCase().includes(query);
+  });
+  createCards(filtered);
+}
+
+function downloadPDF(index){
+  const ch = chapters[index];
+  const doc = new jsPDF();
+  doc.setFontSize(16);
+  doc.text(ch.title, 10, 20);
+
+  doc.setFontSize(12);
+  let y=30;
+
+  const splitNotes = doc.splitTextToSize(ch.notes, 180);
+  doc.text(splitNotes, 10, y);
+  y += splitNotes.length*7;
+
+  doc.text("Important Terms:", 10, y+10);
+  const termsText = ch.terms.join(", ");
+  const splitTerms = doc.splitTextToSize(termsText, 180);
+  doc.text(splitTerms, 10, y+20);
+  y += splitTerms.length*7 + 20;
+
+  doc.text("Q/A:", 10, y+10);
+  ch.qa.forEach((q)=>{
+    const splitQA = doc.splitTextToSize(q.q+" - "+q.a, 180);
+    doc.text(splitQA, 10, y+20);
+    y += splitQA.length*7 + 10;
+  });
+
+  doc.save(`${ch.title}.pdf`);
+}
+
+function downloadAllPDF(){
+  const doc = new jsPDF();
+  chapters.forEach((ch, idx)=>{
+    if(idx!==0) doc.addPage();
+    doc.setFontSize(16);
+    doc.text(ch.title, 10, 20);
+
+    doc.setFontSize(12);
+    let y=30;
+
+    const splitNotes = doc.splitTextToSize(ch.notes, 180);
+    doc.text(splitNotes, 10, y);
+    y += splitNotes.length*7;
+
+    doc.text("Important Terms:", 10, y+10);
+    const termsText = ch.terms.join(", ");
+    const splitTerms = doc.splitTextToSize(termsText, 180);
+    doc.text(splitTerms, 10, y+20);
+    y += splitTerms.length*7 + 20;
+
+    doc.text("Q/A:", 10, y+10);
+    ch.qa.forEach((q)=>{
+      const splitQA = doc.splitTextToSize(q.q+" - "+q.a, 180);
+      doc.text(splitQA, 10, y+20);
+      y += splitQA.length*7 + 10;
+    });
+  });
+  doc.save("All_Chapters_AI_Notes.pdf");
+}
+
+// INIT
+buildNav();
+createCards(chapters);
+</script>
+</body>
+</html>
+
